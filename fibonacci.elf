@@ -1,0 +1,25 @@
+%%%%
+%%%% Fibonacci in Twelf.
+%%%% Written by Alexander Færøy <ahf@0x90.dk>
+%%%%
+
+n : type.
+z : n.
+s : n -> n.
+
+plus : n -> n -> n -> type.
+plus/z : plus z B B.
+plus/s : plus (s A) B (s C) <- plus A B C.
+
+pred : n -> n -> type.
+pred/s : pred (s A) A.
+
+fibonacci : n -> n -> type.
+fibonacci/0 : fibonacci z (s z).
+fibonacci/1 : fibonacci (s z) (s z).
+fibonacci/s : fibonacci A B
+    <- pred A A'
+    <- pred A' A''
+    <- fibonacci A' R'
+    <- fibonacci A'' R''
+    <- plus R' R'' B.

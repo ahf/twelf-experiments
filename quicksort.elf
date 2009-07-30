@@ -1,0 +1,72 @@
+%%%%
+%%%% Quicksort in Twelf.
+%%%% Written by Alexander Færøy <ahf@0x90.dk>
+%%%%
+
+%%
+%% Peano Axioms.
+%%
+nat : type.
+nat/zero : nat.
+nat/succ : nat -> nat.
+
+%%
+%% The Natural Numbers.
+%%
+0 : nat = nat/zero.
+1 : nat = nat/succ 0.
+2 : nat = nat/succ 1.
+3 : nat = nat/succ 2.
+4 : nat = nat/succ 3.
+5 : nat = nat/succ 4.
+6 : nat = nat/succ 5.
+7 : nat = nat/succ 6.
+8 : nat = nat/succ 7.
+9 : nat = nat/succ 8.
+
+%%
+%% Comparators.
+%%
+cmp : type.
+cmp/lt : cmp.
+cmp/gt : cmp.
+cmp/eq : cmp.
+
+compare : nat -> nat -> cmp -> type.
+compare/zz : compare nat/zero nat/zero cmp/eq.
+compare/zs : compare nat/zero (nat/succ A) cmp/lt.
+compare/sz : compare (nat/succ A) nat/zero cmp/gt.
+compare/ss : compare (nat/succ A) (nat/succ B) C <- compare A B C.
+
+%%
+%% Lists.
+%%
+list : type.
+list/nil : list.
+list/cons : nat -> list -> list.
+
+concat : list -> list -> list -> type.
+concat/nil : concat list/nil A A.
+concat/cons : concat A B C <- concat (list/cons X A) B (list/cons X C).
+
+sandwich : list -> nat -> list -> list -> type.
+sandwich/nil : sandwich list/nil N B (list/cons N B).
+sandwich/cons : sandwich (list/cons X A) N B (list/cons X R) <- sandwich A N B R.
+
+pick : cmp -> nat -> list -> list -> list -> list -> list -> list -> type.
+pick/lt : pick cmp/lt N A B C (list/cons N A) B C.
+pick/eq : pick cmp/eq N A B C A (list/cons N B) C.
+pick/gt : pick cmp/gt N A B C A B (list/cons N C).
+
+split : nat -> list -> list -> list -> list -> type.
+split/nil : split N list/nil list/nil list/nil list/nil.
+split/cons : split N (list/cons X L) A B C <- split N L A' B' C' <- compare X N R <- pick R X A' B' C' A B C.
+
+%%
+%% Quicksort.
+%%
+quicksort : list -> list -> type.
+quicksort/nil : quicksort list/nil list/nil.
+quicksort/cons : quicksort (list/cons X I) O <- split X I A B C <- quicksort A A' <- quicksort C C' <- concat B C' C'' <- sandwich A' X C'' O.
+
+%query 1 1 quicksort (list/cons 3 (list/cons 1 (list/cons 2 (list/cons 4 (list/cons 0 list/nil))))) X.

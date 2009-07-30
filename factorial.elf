@@ -1,0 +1,29 @@
+%%%%
+%%%% Factorial in Twelf.
+%%%% Written by Alexander Færøy <ahf@0x90.dk>
+%%%%
+
+n : type.
+z : n.
+s : n -> n.
+
+plus : n -> n -> n -> type.
+plus/z : plus z B B.
+plus/s : plus (s A) B (s C)
+    <- plus A B C.
+
+mult : n -> n -> n -> type.
+mult/z : mult z _ z.
+mult/s : mult (s A) B C'
+    <- plus B C C'
+    <- mult A B C.
+
+pred : n -> n -> type.
+pred/s : pred (s A) A.
+
+factorial : n -> n -> type.
+factorial/z : factorial z (s z).
+factorial/s : factorial N R
+    <- pred N N'
+    <- factorial N' R'
+    <- mult N R' R.
